@@ -22,7 +22,6 @@ body,html {
 .font-heading {
     font-family: 'Oranienbaum', serif;
 }
-
 /* ========== B黑洞画布 底层永久背景 ========== */
 #blackholeCanvas {
     position:fixed;
@@ -33,7 +32,6 @@ body,html {
     z-index:0;
     background:#191919;
 }
-
 /* ========== 首页浮层 homeLayer ========== */
 #homeLayer {
     position:fixed;
@@ -109,7 +107,6 @@ body,html {
 .btn-enter:hover::before {
     opacity:1;
 }
-
 /* ========== 塔罗业务层 contentLayer（重点：内部滚动！！） ========== */
 #contentLayer {
     position:fixed;
@@ -131,7 +128,6 @@ body,html {
     padding:1.5rem;
 }
 .particles { display:none; }
-
 .home-nav-btn {
     position:fixed;
     top:20px;
@@ -148,7 +144,6 @@ body,html {
     background:#b77e5e;
     color:#fff;
 }
-
 .header {
     text-align:center;
     padding:1rem;
@@ -162,7 +157,6 @@ body,html {
     letter-spacing:4px;
 }
 .header h1 span { color:var(--gold); }
-
 .toolbar {
     display:flex;
     gap:0.5rem;
@@ -185,7 +179,6 @@ body,html {
     color:var(--text);
     box-shadow:0 0 10px rgba(168,95,58,0.3);
 }
-
 .search-box {
     display:flex;
     gap:0.5rem;
@@ -210,7 +203,6 @@ body,html {
     justify-content:center;
     margin-bottom:1rem;
 }
-
 .category-gallery {
     display:flex;
     flex-wrap:wrap;
@@ -239,7 +231,6 @@ body,html {
 .cat-icon { font-size:2.2rem; }
 .cat-name { color:var(--gold); font-size:1rem; font-weight:bold; letter-spacing:1px; }
 .cat-sub { color:var(--text2); font-size:0.7rem; }
-
 .grid {
     display:grid;
     grid-template-columns: repeat(auto-fill,minmax(90px,1fr));
@@ -297,10 +288,8 @@ body,html {
 .element-air { background:rgba(149,165,166,0.2); border-color:#95a5a6; color:#95a5a6; }
 .element-water { background:rgba(52,152,219,0.2); border-color:#3498db; color:#3498db; }
 .element-earth { background:rgba(212,165,116,0.2); border-color:#d4a574; color:#d4a574; }
-
 .view-section { display:none; }
 .view-section.active { display:block; }
-
 .draw-area { text-align:center; padding:2rem; }
 .deck {
     width:140px;
@@ -346,7 +335,6 @@ body,html {
     font-size:0.7rem;
     z-index:10;
 }
-
 .history-list { display:flex; flex-direction:column; gap:0.8rem; }
 .history-item {
     background:rgba(31,24,27,0.6);
@@ -370,7 +358,6 @@ body,html {
     background:#1c1618;
 }
 .history-card-mini img { width:100%; height:100%; object-fit:cover; }
-
 .modal {
     display:none;
     position:fixed;
@@ -476,7 +463,6 @@ body,html {
     font-size:0.8rem;
 }
 .element-mix-desc { color:var(--text2); font-size:0.75rem; font-style:italic; padding-left:0.5rem; }
-
 .detail-info {
     display:grid;
     grid-template-columns:1fr 1fr;
@@ -490,7 +476,6 @@ body,html {
     font-size:0.8rem;
 }
 .info-label { font-size:0.7rem; color:var(--text2); }
-
 .desc-box {
     background:rgba(15,12,13,0.8);
     border-left:3px solid var(--copper);
@@ -539,7 +524,6 @@ body,html {
     background:linear-gradient(135deg,#d9946b,#b77e5e);
     transform:translateY(-2px);
 }
-
 .related-cards {
     margin-top:1rem;
     padding-top:1rem;
@@ -574,7 +558,6 @@ body,html {
 .chip-name { font-size:0.8rem; color:var(--text); font-weight:500; }
 .chip-type { font-size:0.55rem; color:var(--text2); margin-top:1px; }
 .chip-others { font-size:0.6rem; color:var(--text2); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:80px; flex-shrink:0; }
-
 /* 牌阵 */
 .spread-selector {
     display:flex;
@@ -610,7 +593,6 @@ body,html {
     color:var(--text);
 }
 .spread-interp strong { color:var(--gold); }
-
 /* 资料库 */
 .library-btn {
     background:linear-gradient(135deg,#2d1f1d,#1f181b);
@@ -743,7 +725,6 @@ body,html {
     background:rgba(168,95,58,0.1);
 }
 .symbol-results { display:flex; flex-direction:column; gap:0.5rem; }
-
 /* AI精灵 */
 #ai-spirit {
     position:fixed;
@@ -823,7 +804,6 @@ body,html {
     cursor:pointer;
 }
 .spirit-actions button:hover { background:#d9946b; }
-
 .toast {
     position:fixed;
     bottom:2rem;
@@ -844,13 +824,72 @@ body,html {
     transform:translateX(-50%) translateY(0);
     opacity:1;
 }
-
 /* 滚动条美化 */
 ::-webkit-scrollbar { width:6px; height:6px; }
 ::-webkit-scrollbar-track { background:#0b0a0c; }
 ::-webkit-scrollbar-thumb { background:#3f2e2a; border-radius:3px; }
 ::-webkit-scrollbar-thumb:hover { background:#b77e5e; }
-
+/* ========== 符号弹窗完整样式【已经内置在这里】 ========== */
+.symbol-modal {
+    position: fixed;
+    inset: 0;
+    background:rgba(0,0,0,0.85);
+    z-index:100002;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:1rem;
+}
+.symbol-modal-inner {
+    background:linear-gradient(135deg,#121011,#1a1318);
+    border:1px solid var(--border);
+    border-radius:1rem;
+    max-width:520px;
+    width:100%;
+    max-height:85vh;
+    overflow-y:auto;
+    padding:1.4rem;
+}
+.symbol-modal-header {
+    font-size:0.8rem;
+    letter-spacing:1px;
+}
+.symbol-meaning {
+    line-height:1.6;
+    color:var(--text);
+}
+.symbol-hint {
+    font-size:0.72rem;
+    color:var(--text2);
+    margin:0.4rem 0;
+}
+.symbol-tags {
+    display:flex;
+    flex-wrap:wrap;
+    gap:0.4rem;
+}
+.symbol-tag {
+    padding:0.3rem 0.6rem;
+    border:1px solid var(--border);
+    border-radius:10px;
+    font-size:0.7rem;
+    color:var(--text2);
+}
+.symbol-result {
+    padding:0.6rem;
+    border:1px solid var(--border);
+    border-radius:10px;
+    cursor:pointer;
+    transition:0.2s;
+}
+.symbol-result:hover {
+    border-color:var(--copper);
+    background:rgba(168,95,58,0.08);
+}
+.symbol-match {
+    color:var(--gold);
+    font-weight:bold;
+}
 /* 响应式 */
 @media(max-width:600px) {
     .home-title { font-size:2.2rem; letter-spacing:4px; }
