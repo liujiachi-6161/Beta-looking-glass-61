@@ -9,181 +9,170 @@
     <link rel="stylesheet" href="./style.css">
 </head>
 <body>
-    <!-- 【底层永久画布：黑洞粒子背景 z-index:0，不在homeLayer内部！】 -->
-    <canvas id="blackholeCanvas"></canvas>
+<canvas id="blackholeCanvas"></canvas>
 
-    <!-- 【首页浮层：标题+按钮，点击进入后隐藏，画布留在底下当背景】 -->
-    <div id="homeLayer">
-        <div class="home-content">
-            <h1 class="home-title">吉普赛之眼</h1>
-            <p class="home-subtitle">潜入暗夜 · 聆听密语</p>
-            <button class="btn-enter" onclick="triggerExplodeAndEnter()">✦ 进入暗夜 ✦</button>
-        </div>
+<div id="homeLayer">
+    <div class="home-content">
+        <h1 class="home-title">吉普赛之眼</h1>
+        <p class="home-subtitle">潜入暗夜 · 聆听密语</p>
+        <button class="btn-enter" onclick="triggerExplodeAndEnter()">✦ 进入暗夜 ✦</button>
     </div>
+</div>
 
-    <!-- 【塔罗业务层】 -->
-    <div id="contentLayer">
-        <div class="particles" id="particles"></div>
-        <button class="home-nav-btn" onclick="returnHome()">
-            <i>⌂</i> 返回首页
-        </button>
-        <div class="app-container">
-            <div class="header">
-                <h1>✦ 吉普赛 <span>· 暗忆</span></h1>
-            </div>
-            <div class="toolbar">
-                <button class="btn active" data-view="browse">🔮 浏览牌库</button>
-                <button class="btn" data-view="draw">🎴 洗牌抽牌</button>
-                <button class="btn" data-view="spread">📐 牌阵占卜</button>
-                <button class="btn" data-view="history">📜 历史记录</button>
-                <button class="library-btn" onclick="openLibrary()">📚 资料库</button>
-                <button class="btn" id="dailyBtn">🌅 每日一抽</button>
-            </div>
+<div id="contentLayer">
+    <div class="particles" id="particles"></div>
+    <button class="home-nav-btn" onclick="returnHome()">
+        <i>⌂</i> 返回首页
+    </button>
+    <div class="app-container">
+        <div class="header">
+            <h1>✦ 吉普赛 <span>· 暗忆</span></h1>
+        </div>
+        <div class="toolbar">
+            <button class="btn active" data-view="browse">🔮 浏览牌库</button>
+            <button class="btn" data-view="draw">🎴 洗牌抽牌</button>
+            <button class="btn" data-view="spread">📐 牌阵占卜</button>
+            <button class="btn" data-view="history">📜 历史记录</button>
+            <button class="library-btn" onclick="openLibrary()">📚 资料库</button>
+            <button class="btn" id="dailyBtn">🌅 每日一抽</button>
+        </div>
 
-            <!-- 浏览牌库 -->
-            <div class="view-section active" id="browseView">
-                <div class="toolbar filter-bar">
-                    <button class="btn active" data-filter="all">全部</button>
-                    <button class="btn" data-filter="major">大阿卡纳</button>
-                    <button class="btn" data-filter="wands">权杖</button>
-                    <button class="btn" data-filter="cups">圣杯</button>
-                    <button class="btn" data-filter="swords">宝剑</button>
-                    <button class="btn" data-filter="pentacles">星币</button>
-                </div>
-                <div class="category-gallery">
-                    <div class="cat-item" onclick="setFilter('major')"><span class="cat-icon">🏛️</span><span class="cat-name">大阿卡纳</span><span class="cat-sub">22张·核心旅程</span></div>
-                    <div class="cat-item" onclick="setFilter('wands')"><span class="cat-icon">🔥</span><span class="cat-name">权杖</span><span class="cat-sub">14张·行动与热情</span></div>
-                    <div class="cat-item" onclick="setFilter('cups')"><span class="cat-icon">💧</span><span class="cat-name">圣杯</span><span class="cat-sub">14张·情感与直觉</span></div>
-                    <div class="cat-item" onclick="setFilter('swords')"><span class="cat-icon">💨</span><span class="cat-name">宝剑</span><span class="cat-sub">14张·思维与冲突</span></div>
-                    <div class="cat-item" onclick="setFilter('pentacles')"><span class="cat-icon">🌍</span><span class="cat-name">星币</span><span class="cat-sub">14张·物质与现实</span></div>
-                </div>
-                <div class="search-box">
-                    <input type="text" class="search-input" id="searchInput" placeholder="搜索牌名..." />
-                </div>
-                <div class="grid" id="cardGrid"></div>
+        <div class="view-section active" id="browseView">
+            <div class="toolbar filter-bar">
+                <button class="btn active" data-filter="all">全部</button>
+                <button class="btn" data-filter="major">大阿卡纳</button>
+                <button class="btn" data-filter="wands">权杖</button>
+                <button class="btn" data-filter="cups">圣杯</button>
+                <button class="btn" data-filter="swords">宝剑</button>
+                <button class="btn" data-filter="pentacles">星币</button>
             </div>
-
-            <!-- 洗牌抽牌 -->
-            <div class="view-section" id="drawView">
-                <div class="draw-area">
-                    <div class="deck" id="deck">
-                        <div class="deck-icon">🎴</div>
-                        <div class="deck-count" id="deckCount">78 张</div>
-                    </div>
-                    <p style="color:#8f7a6b;">点击牌堆洗牌抽牌</p>
-                    <div class="draw-result" id="drawResult"></div>
-                </div>
+            <div class="category-gallery">
+                <div class="cat-item" onclick="setFilter('major')"><span class="cat-icon">🏛️</span><span class="cat-name">大阿卡纳</span><span class="cat-sub">22张·核心旅程</span></div>
+                <div class="cat-item" onclick="setFilter('wands')"><span class="cat-icon">🔥</span><span class="cat-name">权杖</span><span class="cat-sub">14张·行动与热情</span></div>
+                <div class="cat-item" onclick="setFilter('cups')"><span class="cat-icon">💧</span><span class="cat-name">圣杯</span><span class="cat-sub">14张·情感与直觉</span></div>
+                <div class="cat-item" onclick="setFilter('swords')"><span class="cat-icon">💨</span><span class="cat-name">宝剑</span><span class="cat-sub">14张·思维与冲突</span></div>
+                <div class="cat-item" onclick="setFilter('pentacles')"><span class="cat-icon">🌍</span><span class="cat-name">星币</span><span class="cat-sub">14张·物质与现实</span></div>
             </div>
-
-            <!-- 牌阵占卜 -->
-            <div class="view-section" id="spreadView">
-                <div class="draw-area">
-                    <h3 style="color:#d9946b;margin-bottom:0.5rem;">📐 牌阵占卜</h3>
-                    <div class="spread-selector" id="spreadSelector">
-                        <button class="btn active" data-spread="three">三牌阵</button>
-                        <button class="btn" data-spread="heartVoice">心之声</button>
-                        <button class="btn" data-spread="relationship">关系牌阵</button>
-                        <button class="btn" data-spread="choice">二选一</button>
-                        <button class="btn" data-spread="breakupReunion">分手复合</button>
-                        <button class="btn" data-spread="loversVenus">恋人维纳斯</button>
-                        <button class="btn" data-spread="loversCross">恋人十字</button>
-                        <button class="btn" data-spread="celtic">凯尔特十字</button>
-                    </div>
-                    <div class="deck" id="spreadDeck" style="width:100px;height:140px;">
-                        <div class="deck-icon">🃏</div>
-                        <div class="deck-count" id="spreadCount">3 张</div>
-                    </div>
-                    <p style="color:#8f7a6b;">点击牌堆展开牌阵</p>
-                    <div class="spread-grid" id="spreadResult"></div>
-                    <div class="spread-interp" id="spreadInterp" style="display:none;"></div>
-                </div>
+            <div class="search-box">
+                <input type="text" class="search-input" id="searchInput" placeholder="搜索牌名..." />
             </div>
+            <div class="grid" id="cardGrid"></div>
+        </div>
 
-            <!-- 历史记录 -->
-            <div class="view-section" id="historyView">
-                <div class="history-list" id="historyList"></div>
+        <div class="view-section" id="drawView">
+            <div class="draw-area">
+                <div class="deck" id="deck">
+                    <div class="deck-icon">🎴</div>
+                    <div class="deck-count" id="deckCount">78 张</div>
+                </div>
+                <p style="color:#8f7a6b;">点击牌堆洗牌抽牌</p>
+                <div class="draw-result" id="drawResult"></div>
             </div>
         </div>
-    </div>
 
-    <!-- 详情弹窗 -->
-    <div class="modal" id="modal">
-        <div class="modal-content">
-            <button class="modal-close" id="modalClose">×</button>
-            <div class="detail-img" id="detailImgContainer"><img id="modalImg" src="" alt="" /></div>
-            <div class="reversed-indicator" id="reversedIndicator">⚠️ 逆位状态</div>
-            <h2 class="detail-title" id="modalTitle"></h2>
-            <div class="position-tabs">
-                <button class="position-tab active" id="uprightTab" onclick="switchPosition('upright')">↑ 正位</button>
-                <button class="position-tab reversed-tab" id="reversedTab" onclick="switchPosition('reversed')">↓ 逆位</button>
-            </div>
-            <div class="element-display" id="elementDisplay"></div>
-            <div class="detail-info" id="modalInfo"></div>
-            <div class="desc-box" id="modalDesc"></div>
-            <div class="related-cards" id="relatedCards" style="display:none;">
-                <div class="related-title">🔍 视觉符号（点击查看素材解释）</div>
-                <div class="related-grid" id="relatedGrid"></div>
-            </div>
-            <div class="detail-actions">
-                <button class="detail-btn" id="favoriteBtn">☆ 收藏</button>
-                <button class="detail-btn" id="shareBtn">↗ 分享</button>
-            </div>
-            <div class="note-box">
-                <div style="color:#8f7a6b;margin-bottom:0.5rem;">📜 你的备注：</div>
-                <textarea id="modalNote" placeholder="记录你的感悟..."></textarea>
-            </div>
-            <button class="close-scroll-btn" onclick="closeModalScroll()">📜 合上卷轴</button>
-        </div>
-    </div>
-
-    <!-- Toast -->
-    <div class="toast" id="toast"></div>
-
-    <!-- 资料库模态 -->
-    <div class="library-modal" id="libraryModal">
-        <div class="library-content">
-            <button class="modal-close" onclick="closeLibrary()">×</button>
-            <h2 style="text-align:center;color:#d9946b;margin-bottom:1rem;">📚 塔罗资料库</h2>
-            <div class="library-tabs">
-                <button class="library-tab active" data-tab="numbers">🔢 数字含义</button>
-                <button class="library-tab" data-tab="elements">🌍 四元素</button>
-                <button class="library-tab" data-tab="zodiac">♈ 星座对应</button>
-                <button class="library-tab" data-tab="symbols">🔍 符号检索</button>
-            </div>
-            <div class="library-section active" id="lib-numbers"><div class="number-grid" id="numberGrid"></div></div>
-            <div class="library-section" id="lib-elements"><div class="element-grid" id="elementGrid"></div></div>
-            <div class="library-section" id="lib-zodiac"><div class="zodiac-grid" id="zodiacGrid"></div></div>
-            <div class="library-section" id="lib-symbols">
-                <div class="symbol-search">
-                    <input type="text" id="symbolSearchInput" placeholder="搜索符号、关键词或牌名..." oninput="searchSymbols()" />
+        <div class="view-section" id="spreadView">
+            <div class="draw-area">
+                <h3 style="color:#d9946b;margin-bottom:0.5rem;">📐 牌阵占卜</h3>
+                <div class="spread-selector" id="spreadSelector">
+                    <button class="btn active" data-spread="three">三牌阵</button>
+                    <button class="btn" data-spread="heartVoice">心之声</button>
+                    <button class="btn" data-spread="relationship">关系牌阵</button>
+                    <button class="btn" data-spread="choice">二选一</button>
+                    <button class="btn" data-spread="breakupReunion">分手复合</button>
+                    <button class="btn" data-spread="loversVenus">恋人维纳斯</button>
+                    <button class="btn" data-spread="loversCross">恋人十字</button>
+                    <button class="btn" data-spread="celtic">凯尔特十字</button>
                 </div>
-                <div class="symbol-categories">
-                    <button class="symbol-cat-btn active" data-cat="all" onclick="filterSymbolCat('all',event)">全部</button>
-                    <button class="symbol-cat-btn" data-cat="element" onclick="filterSymbolCat('element',event)">元素</button>
-                    <button class="symbol-cat-btn" data-cat="animal" onclick="filterSymbolCat('animal',event)">动物</button>
-                    <button class="symbol-cat-btn" data-cat="object" onclick="filterSymbolCat('object',event)">物品</button>
-                    <button class="symbol-cat-btn" data-cat="person" onclick="filterSymbolCat('person',event)">人物</button>
+                <div class="deck" id="spreadDeck" style="width:100px;height:140px;">
+                    <div class="deck-icon">🃏</div>
+                    <div class="deck-count" id="spreadCount">3 张</div>
                 </div>
-                <div class="symbol-results" id="symbolResults"></div>
+                <p style="color:#8f7a6b;">点击牌堆展开牌阵</p>
+                <div class="spread-grid" id="spreadResult"></div>
+                <div class="spread-interp" id="spreadInterp" style="display:none;"></div>
             </div>
         </div>
-    </div>
 
-    <!-- AI精灵 -->
-    <div id="ai-spirit" onclick="openSpirit()">🔮</div>
-    <div id="ai-spirit-modal" class="spirit-modal">
-        <div class="spirit-content">
-            <h4>✨ AI 智慧之灵</h4>
-            <p id="spirit-context" style="color: #8f7a6b; font-size: 0.8rem;">随时可以问我关于当前的牌、符号或牌阵问题...</p>
-            <div id="spirit-output" class="spirit-output">点击"✨ 询问"，我会为你解答。</div>
-            <textarea id="spirit-input" placeholder="请输入你的问题..."></textarea>
-            <div class="spirit-actions">
-                <button onclick="askSpirit()">✨ 询问</button>
-                <button onclick="closeSpirit()">关闭</button>
-            </div>
+        <div class="view-section" id="historyView">
+            <div class="history-list" id="historyList"></div>
         </div>
     </div>
+</div>
 
-    <script src="./app.js"></script>
+<div class="modal" id="modal">
+    <div class="modal-content">
+        <button class="modal-close" id="modalClose">×</button>
+        <div class="detail-img" id="detailImgContainer"><img id="modalImg" src="" alt="" /></div>
+        <div class="reversed-indicator" id="reversedIndicator">⚠️ 逆位状态</div>
+        <h2 class="detail-title" id="modalTitle"></h2>
+        <div class="position-tabs">
+            <button class="position-tab active" id="uprightTab" onclick="switchPosition('upright')">↑ 正位</button>
+            <button class="position-tab reversed-tab" id="reversedTab" onclick="switchPosition('reversed')">↓ 逆位</button>
+        </div>
+        <div class="element-display" id="elementDisplay"></div>
+        <div class="detail-info" id="modalInfo"></div>
+        <div class="desc-box" id="modalDesc"></div>
+        <div class="related-cards" id="relatedCards" style="display:none;">
+            <div class="related-title">🔍 视觉符号（点击查看素材解释）</div>
+            <div class="related-grid" id="relatedGrid"></div>
+        </div>
+        <div class="detail-actions">
+            <button class="detail-btn" id="favoriteBtn">☆ 收藏</button>
+            <button class="detail-btn" id="shareBtn">↗ 分享</button>
+        </div>
+        <div class="note-box">
+            <div style="color:#8f7a6b;margin-bottom:0.5rem;">📜 你的备注：</div>
+            <textarea id="modalNote" placeholder="记录你的感悟..."></textarea>
+        </div>
+        <button class="close-scroll-btn" onclick="closeModalScroll()">📜 合上卷轴</button>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div class="library-modal" id="libraryModal">
+    <div class="library-content">
+        <button class="modal-close" onclick="closeLibrary()">×</button>
+        <h2 style="text-align:center;color:#d9946b;margin-bottom:1rem;">📚 塔罗资料库</h2>
+        <div class="library-tabs">
+            <button class="library-tab active" data-tab="numbers">🔢 数字含义</button>
+            <button class="library-tab" data-tab="elements">🌍 四元素</button>
+            <button class="library-tab" data-tab="zodiac">♈ 星座对应</button>
+            <button class="library-tab" data-tab="symbols">🔍 符号检索</button>
+        </div>
+        <div class="library-section active" id="lib-numbers"><div class="number-grid" id="numberGrid"></div></div>
+        <div class="library-section" id="lib-elements"><div class="element-grid" id="elementGrid"></div></div>
+        <div class="library-section" id="lib-zodiac"><div class="zodiac-grid" id="zodiacGrid"></div></div>
+        <div class="library-section" id="lib-symbols">
+            <div class="symbol-search">
+                <input type="text" id="symbolSearchInput" placeholder="搜索符号、关键词或牌名..." oninput="searchSymbols()" />
+            </div>
+            <div class="symbol-categories">
+                <button class="symbol-cat-btn active" data-cat="all" onclick="filterSymbolCat('all',event)">全部</button>
+                <button class="symbol-cat-btn" data-cat="element" onclick="filterSymbolCat('element',event)">元素</button>
+                <button class="symbol-cat-btn" data-cat="animal" onclick="filterSymbolCat('animal',event)">动物</button>
+                <button class="symbol-cat-btn" data-cat="object" onclick="filterSymbolCat('object',event)">物品</button>
+                <button class="symbol-cat-btn" data-cat="person" onclick="filterSymbolCat('person',event)">人物</button>
+            </div>
+            <div class="symbol-results" id="symbolResults"></div>
+        </div>
+    </div>
+</div>
+
+<div id="ai-spirit" onclick="openSpirit()">🔮</div>
+<div id="ai-spirit-modal" class="spirit-modal">
+    <div class="spirit-content">
+        <h4>✨ AI 智慧之灵</h4>
+        <p id="spirit-context" style="color: #8f7a6b; font-size: 0.8rem;">随时可以问我关于当前的牌、符号或牌阵问题...</p>
+        <div id="spirit-output" class="spirit-output">点击"✨ 询问"，我会为你解答。</div>
+        <textarea id="spirit-input" placeholder="请输入你的问题..."></textarea>
+        <div class="spirit-actions">
+            <button onclick="askSpirit()">✨ 询问</button>
+            <button onclick="closeSpirit()">关闭</button>
+        </div>
+    </div>
+</div>
+
+<script src="./app.js"></script>
 </body>
 </html>
