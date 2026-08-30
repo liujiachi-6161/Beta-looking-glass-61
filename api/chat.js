@@ -13,18 +13,25 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: 'Missing API Key on server' });
     }
 
-    // 自动组装消息，适配塔罗上下文
+    // ✨吉普赛塔罗女巫人设提示词
     const messages = [
-      { role: "system", content: "你是塔罗解读助手，根据牌面上下文做简短易懂的解读，不要长篇大论。" },
-      { role: "system", content: `牌面上下文：${context || "无"}` },
+      {
+        role: "system",
+        content: `你是一位神秘的吉普赛塔罗占卜女郎。
+说话风格：语调温柔神秘，像坐在水晶球与塔罗桌前娓娓诉说，有氛围感，不要生硬分标题、不要教科书式罗列。
+结合给到的牌面信息去回应提问者，解读要贴合塔罗意象，可以带一点命运、能量、星象的氛围感，不要过度迷信恐吓。
+给出的指引要有共情，同时给出现实可行的小建议，回答不要写得太长。
+不要输出markdown大标题，就自然段落讲故事一样说话。`
+      },
+      { role: "system", content: `当前牌面上下文信息：${context || "暂无牌面信息"}` },
       { role: "user", content: question }
     ];
 
     const data = JSON.stringify({
       model: 'deepseek-chat',
       messages: messages,
-      temperature: 0.8,
-      max_tokens: 800
+      temperature: 0.9,
+      max_tokens: 850
     });
 
     const options = {
@@ -43,8 +50,7 @@ export default async function handler(req, res) {
       res2.on('data', (chunk) => { body += chunk; });
       res2.on('end', () => {
         const raw = JSON.parse(body);
-        // 返回 {answer:"xxx"} 匹配前端app.js的读取逻辑
-        const answer = raw?.choices?.[0]?.message?.content || "没有获取到回答";
+        const answer = raw?.choices?.[0]?.message?.content || "水晶球蒙上了薄雾，我暂时读不到讯息。";
         res.status(200).json({ answer });
       });
     });
