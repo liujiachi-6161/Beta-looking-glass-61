@@ -901,3 +901,17 @@ body,html {
     .zodiac-grid { grid-template-columns: repeat(2,1fr); }
     .cat-item { min-width:100px; padding:0.8rem 1rem; }
 }
+/*标题文字光晕呼吸动画 */
+@keyframes breathTitleGlow {
+    0%,100% {
+        opacity:0.8;
+        filter: drop-shadow(0 0 20px rgba(217, 148, 107, 0.4));
+    }
+    50% {
+        opacity:1;
+        filter: drop-shadow(0 0 42px rgba(217, 148, 107, 0.75));
+    }
+}
+.home-title {
+    animation: breathTitleGlow 6s ease‑in‑out infinite;
+}
