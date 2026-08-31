@@ -7,6 +7,7 @@ let collapse = false;
 let expanse = false;
 let startTime;
 let animationId;
+let aiIsLoading = false;
 
 class Star {
     constructor() {
@@ -717,14 +718,24 @@ function closeSpirit() {
 }
 
 async function askSpirit() {
+    if(aiIsLoading) return;
+    aiIsLoading = true;
+
     const inp = document.getElementById('spirit-input');
     const out = document.getElementById('spirit-output');
+    const sendBtn = document.querySelector('.spirit-actions button');
+
     const q = inp.value.trim();
     if(!q) {
         out.innerText = "请输入你的问题，或者先点开一张牌再提问。";
+        aiIsLoading = false;
         return;
     }
+
     out.innerText = "思考中...";
+    sendBtn.disabled = true;
+    sendBtn.innerText = "占卜思考中…";
+
     try {
         const res = await fetch("/api/chat", {
             method:"POST",
@@ -738,8 +749,12 @@ async function askSpirit() {
         out.innerText = data.answer || "没有返回回答";
     } catch(err) {
         out.innerHTML = `<div style="color:#ff8888">⚠️ API接口请求失败<br>${err.message}<br>请确认后端服务已经启动，api接口可访问。</div>`;
+    } finally {
+        aiIsLoading = false;
+        sendBtn.disabled = false;
+        sendBtn.innerText = "发送";
+        inp.value = '';
     }
-    inp.value = '';
 }
 
 function bindEvents() {
