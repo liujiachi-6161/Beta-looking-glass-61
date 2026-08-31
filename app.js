@@ -361,17 +361,22 @@ function switchView(view) {
 }
 
 function setFilter(filter) {
-    currentFilter = filter;
-    document.querySelectorAll('[data-filter]').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.filter === filter);
-    });
-    renderGrid();
-    const contentLayer = document.getElementById('contentLayer');
-if(contentLayer) {
+  currentFilter = filter;
+  document.querySelectorAll('[data-filter]').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.filter === filter);
+  });
+  renderGrid();
+  requestAnimationFrame(()=>{
     requestAnimationFrame(()=>{
-        contentLayer.scrollTop = 0;
+      const cardGrid = document.getElementById('cardGrid');
+      if(cardGrid){
+        cardGrid.scrollIntoView({
+          behavior: "smooth",
+          block: "start"
+        });
+      }
     })
-}
+  })
 }
 
 function renderGrid() {
