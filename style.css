@@ -743,8 +743,8 @@ body,html {
     position:fixed;
     bottom:20px;
     right:20px;
-    width:168px;
-    height:168px;
+    width:84px;
+    height:84px;
     border-radius:50%;
     background:linear-gradient(135deg,#b77e5e,#8b5a3c);
     border:2px solid #d9946b;
