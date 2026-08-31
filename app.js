@@ -366,6 +366,12 @@ function setFilter(filter) {
         btn.classList.toggle('active', btn.dataset.filter === filter);
     });
     renderGrid();
+    const contentLayer = document.getElementById('contentLayer');
+if(contentLayer) {
+    requestAnimationFrame(()=>{
+        contentLayer.scrollTop = 0;
+    })
+}
 }
 
 function renderGrid() {
