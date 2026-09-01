@@ -955,3 +955,17 @@ body,html {
     border-radius:4px;
     margin-right:6px;
 }
+.spread-base-item{
+    display:block;
+    background:#2b2222;
+    border-radius:8px;
+    padding:8px 12px;
+    margin:8px 0;
+}
+.spread-base-title{
+    display:inline-block;
+    background:#44332c;
+    padding:3px 8px;
+    border-radius:4px;
+    margin-right:6px;
+}
