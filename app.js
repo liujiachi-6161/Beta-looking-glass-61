@@ -817,12 +817,15 @@ async function askSpirit() {
 }
 
 function bindEvents() {
-    document.querySelectorAll('[data-view]').forEach(btn=>{
-        btn.addEventListener('click',e=>{
-            const v = e.target.dataset.view;
+   document.querySelectorAll('[data-view]').forEach(btn=>{
+    btn.addEventListener('click',e=>{
+        const targetBtn = e.target.closest('[data-view]');
+        if (targetBtn) {
+            const v = targetBtn.dataset.view;
             switchView(v);
-        })
+        }
     })
+})
     document.querySelectorAll('[data-filter]').forEach(btn=>{
         btn.addEventListener('click',e=>{
             const f = e.target.dataset.filter;
