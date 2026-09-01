@@ -642,12 +642,47 @@ function drawSpread() {
                         <div class="spread-meaning">${mean}</div>
                     </div>`;
         }).join('');
+        // ==========新增：渲染底部基础解读汇总==========
+{
+    const baseEl = document.getElementById("spreadBaseInterp");
+    if(baseEl){
+        let baseText = `✦ ${def.label} · 基础解读 ✦\n`;
+        spreadCards.forEach((sc, idx)=>{
+            const posName = def.slots[idx];
+            const revTxt = sc.reversed ? "逆位" : "正位";
+            const brief = sc.reversed ? sc.card.reverseDesc : sc.card.desc;
+            baseText += `【${posName}】${sc.card.name} ${revTxt}：${brief}\n`;
+        })
+        baseEl.innerText = baseText;
+    }
+}
     }, 600);
 }
 
-document.querySelector('#spreadSelector')?.addEventListener('click', e => {
-    const btn = e.target.closest('[data-spread]');
-    if (!btn) return;
+function openSpirit() {
+    // 打开AI弹窗，自动拼接当前整套牌阵上下文
+    let fullSpreadText = "";
+    const def = SPREAD_DEFS[currentSpread];
+    if(spreadCards && spreadCards.length > 0){
+        fullSpreadText = `当前牌阵：${def.label}（${def.desc}）\n`;
+        spreadCards.forEach((sc, idx)=>{
+            const posName = def.slots[idx];
+            const posMean = def.meanings[idx];
+            const revTxt = sc.reversed ? "逆位" : "正位";
+            fullSpreadText += `【${posName}】${sc.card.name}(${revTxt})：位置含义：${posMean}；牌释义：${sc.reversed ? sc.card.reverseDesc : sc.card.desc}\n`;
+        })
+    }
+    // 如果已经点开单张牌，追加单张牌信息；优先整套牌阵
+    if(fullSpreadText){
+        setSpiritContext(fullSpreadText);
+    }else if(currentCard){
+        // 保留原有单张牌逻辑不变
+        setSpiritContext(`当前牌面：${currentCard.name}（${currentPosition === 'reversed' ? '逆位' : '正位'}）。元素：${currentCard.element}。画面符号：${currentCard.highlight}`);
+    }else{
+        setSpiritContext("暂无牌阵或牌面，请先抽牌或者点开一张卡牌");
+    }
+    document.getElementById('ai-spirit-modal').classList.add('active');
+}
     document.querySelectorAll('#spreadSelector .btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     currentSpread = btn.dataset.spread;
@@ -655,6 +690,7 @@ document.querySelector('#spreadSelector')?.addEventListener('click', e => {
     document.getElementById('spreadCount').innerText = def.count + ' 张';
     document.getElementById('spreadResult').innerHTML = '';
     document.getElementById('spreadInterp').style.display = 'none';
+    document.getElementById('spreadBaseInterp').innerText = '';
 });
 
 function checkDailyCard() {
