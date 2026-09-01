@@ -1,4 +1,4 @@
-// B方案黑洞粒子模块
+// ===== A1: 黑洞粒子 + 首页切换 =====
 const canvas = document.querySelector('#blackholeCanvas');
 const ctx = canvas.getContext('2d');
 let cw, ch;
@@ -124,8 +124,8 @@ function returnHome() {
     document.getElementById('homeLayer').classList.remove('hidden');
     document.getElementById('contentLayer').classList.remove('active');
 }
-
-// 塔罗业务常量
+// ===== A1 结束 =====
+// ===== A2: 常量定义 =====
 const ELEMENT_MAP = {
     '火': { name: '火', icon: '🔥', class: 'fire', color: '#e67e22' },
     '风': { name: '风', icon: '💨', class: 'air', color: '#95a5a6' },
@@ -175,6 +175,36 @@ const SPREAD_DEFS = {
     celtic:{label:'凯尔特十字',count:10,slots:['当下','阻挡','根基','过去','未来','上方','下方','建议','他人','结局'],meanings:['当前位置','面对的障碍','内在基石','近因','发展趋势','理想/意识','潜意识/恐惧','行动指引','外部影响','最终结果'],desc:'十张牌构成十字与权杖，全景式深层解读'}
 };
 
+const tarotSymbols = [
+    { type: '关联库', symbol: '白马', cards: ['死神', '太阳'], meaning: '死亡与新生，同一匹马跨越生命周期两端' },
+    { type: '关联库', symbol: '高塔', cards: ['高塔', '月亮'], meaning: '同一座尖顶石塔，显与隐的边界' },
+    { type: '关联库', symbol: '旗帜', cards: ['死神', '太阳'], meaning: '同款旗帜，宣告终结与生命欢庆' },
+    { type: '关联库', symbol: '玫瑰', cards: ['愚人', '死神', '魔术师'], meaning: '同种玫瑰（白/红），纯真→终结→创造' },
+    { type: '关联库', symbol: '天使', cards: ['恋人', '审判', '节制'], meaning: '同一位神圣信使，神意介入人间' },
+    { type: '关联库', symbol: '狮子', cards: ['力量', '权杖国王', '权杖王后'], meaning: '同一狮子/狮头装饰，驯服的原始力量' },
+    { type: '关联库', symbol: '蛇', cards: ['恋人', '圣杯二'], meaning: '同一条蛇，智慧与关系的张力' },
+    { type: '关联库', symbol: '向日葵', cards: ['太阳', '权杖王后'], meaning: '同一株向日葵，追随光明' },
+    { type: '关联库', symbol: '百合', cards: ['魔术师', '皇后'], meaning: '同一朵白百合，纯洁与滋养' },
+    { type: '关联库', symbol: '花环/桂冠', cards: ['力量', '世界', '权杖六', '宝剑Ace'], meaning: '同款胜利花环，成就与荣耀' },
+    { type: '关联库', symbol: '王冠（十字顶）', cards: ['皇帝', '死神'], meaning: '同款十字顶王冠，世俗权威的终结' },
+    { type: '关联库', symbol: '王冠（圆顶）', cards: ['皇后', '权杖王后'], meaning: '同款圆顶金冠，阴性滋养型王权' },
+    { type: '关联库', symbol: '王冠（尖顶/三重冠）', cards: ['教皇', '战车'], meaning: '同款三重冠，精神与世俗结合' },
+    { type: '关联库', symbol: '王冠（星冠）', cards: ['战车', '星星'], meaning: '同款星冠，宇宙指引与胜利' },
+    { type: '关联库', symbol: '帆船', cards: ['权杖三', '星币二', '圣杯国王', '宝剑六'], meaning: '同款帆船，旅程与过渡' },
+    { type: '关联库', symbol: '天平', cards: ['正义', '星币六'], meaning: '同款天平，公正与平衡' },
+    { type: '关联库', symbol: '无限符号', cards: ['魔术师', '星币二', '力量'], meaning: '∞，无限潜能与永恒循环' },
+    { type: '素材库', symbol: '山脉', cards: ['愚人', '隐士', '恋人', '皇帝', '节制', '审判', '权杖侍从', '权杖骑士', '星币Ace', '星币侍从'], meaning: '险阻、远方、蓄势、超越' },
+    { type: '素材库', symbol: '河流/水流', cards: ['皇后', '节制', '月亮', '审判', '圣杯Ace', '圣杯八', '圣杯骑士'], meaning: '潜意识流动、过渡、远方' },
+    { type: '素材库', symbol: '小径', cards: ['愚人', '隐士', '月亮', '节制'], meaning: '人生道路、追寻' },
+    { type: '素材库', symbol: '海/浪', cards: ['宝剑二', '星币二'], meaning: '情感起伏、潜意识波动' },
+    { type: '素材库', symbol: '太阳', cards: ['太阳', '恋人', '死神', '节制'], meaning: '意识、生命之源、启迪' },
+    { type: '素材库', symbol: '月亮', cards: ['女祭司', '月亮', '圣杯八'], meaning: '直觉、潜意识、暗中之光' },
+    { type: '素材库', symbol: '星星', cards: ['星星', '战车', '皇后'], meaning: '希望、指引、天命' },
+    { type: '素材库', symbol: '云', cards: ['愚人', '审判', '圣杯四', '圣杯七', '宝剑侍从', '宝剑骑士'], meaning: '思绪、迷雾、神圣遮蔽' },
+    { type: '素材库', symbol: '城堡', cards: ['权杖Ace', '权杖二', '权杖四', '圣杯五', '圣杯六', '星币四', '星币十', '星币国王'], meaning: '安全感、归宿、成就' }
+];
+// ===== A2 结束 =====
+// ===== A3: 78张塔罗牌完整数据 =====
 const TAROT_DATA = [
     {"id":0,"name":"愚者","emoji":"🃏","element":"风","number":"0","type":"major","age":"青年","role":"冒险者","time":"黎明","mood":"无畏","event":"启程","desc":"无限可能性。脚下悬崖，白玫瑰代表纯真，小狗提醒现实。","reverseDesc":"鲁莽轻率，不计后果。盲目冒险，或者恐惧迈出第一步。","highlight":"悬崖·白玫瑰·小狗","imgUrl":"https://pic1.imgdb.cn/i/0345qr49zJCvB89GbuZSlS.jpg"},
     {"id":1,"name":"魔术师","emoji":"✨","element":"风","number":"1","type":"major","age":"成年","role":"创造者","time":"正午","mood":"专注","event":"显化","desc":"意志与资源。四元素摆在桌上，无限符号代表潜能。","reverseDesc":"诡计欺骗，资源浪费。滥用能力，或者意志涣散无法行动。","highlight":"无限符号·四元素·权杖","imgUrl":"https://pic1.imgdb.cn/i/0345qr49tGBwaXWYBpOnxJ.jpg"},
@@ -255,36 +285,8 @@ const TAROT_DATA = [
     {"id":76,"name":"星币王后","emoji":"🐇","element":"土","number":"王后","type":"pentacles","age":"成年","role":"滋养者","time":"午后","mood":"丰饶","event":"滋养","desc":"丰饶女王。手抚兔子坐于花园，大地之母。","reverseDesc":"过度依赖，物质主义。过于物质化，或失去自然连接。","highlight":"星币·兔子·花园","imgUrl":"https://pic1.imgdb.cn/i/034GXmgoHCSecrvHVCuDXp.jpg"},
     {"id":77,"name":"星币国王","emoji":"👑","element":"土","number":"国王","type":"pentacles","age":"中年","role":"掌控者","time":"正午","mood":"权威","event":"掌控","desc":"财富之主。成熟掌控物质，王座稳固。","reverseDesc":"贪婪腐败，物质至上。过度追求物质，或财务腐败。","highlight":"星币·财富","imgUrl":"https://pic1.imgdb.cn/i/034GXmeHL0MsFCWrjmnmzb.jpg"}
 ];
-
-const tarotSymbols = [
-    { type: '关联库', symbol: '白马', cards: ['死神', '太阳'], meaning: '死亡与新生，同一匹马跨越生命周期两端' },
-    { type: '关联库', symbol: '高塔', cards: ['高塔', '月亮'], meaning: '同一座尖顶石塔，显与隐的边界' },
-    { type: '关联库', symbol: '旗帜', cards: ['死神', '太阳'], meaning: '同款旗帜，宣告终结与生命欢庆' },
-    { type: '关联库', symbol: '玫瑰', cards: ['愚人', '死神', '魔术师'], meaning: '同种玫瑰（白/红），纯真→终结→创造' },
-    { type: '关联库', symbol: '天使', cards: ['恋人', '审判', '节制'], meaning: '同一位神圣信使，神意介入人间' },
-    { type: '关联库', symbol: '狮子', cards: ['力量', '权杖国王', '权杖王后'], meaning: '同一狮子/狮头装饰，驯服的原始力量' },
-    { type: '关联库', symbol: '蛇', cards: ['恋人', '圣杯二'], meaning: '同一条蛇，智慧与关系的张力' },
-    { type: '关联库', symbol: '向日葵', cards: ['太阳', '权杖王后'], meaning: '同一株向日葵，追随光明' },
-    { type: '关联库', symbol: '百合', cards: ['魔术师', '皇后'], meaning: '同一朵白百合，纯洁与滋养' },
-    { type: '关联库', symbol: '花环/桂冠', cards: ['力量', '世界', '权杖六', '宝剑Ace'], meaning: '同款胜利花环，成就与荣耀' },
-    { type: '关联库', symbol: '王冠（十字顶）', cards: ['皇帝', '死神'], meaning: '同款十字顶王冠，世俗权威的终结' },
-    { type: '关联库', symbol: '王冠（圆顶）', cards: ['皇后', '权杖王后'], meaning: '同款圆顶金冠，阴性滋养型王权' },
-    { type: '关联库', symbol: '王冠（尖顶/三重冠）', cards: ['教皇', '战车'], meaning: '同款三重冠，精神与世俗结合' },
-    { type: '关联库', symbol: '王冠（星冠）', cards: ['战车', '星星'], meaning: '同款星冠，宇宙指引与胜利' },
-    { type: '关联库', symbol: '帆船', cards: ['权杖三', '星币二', '圣杯国王', '宝剑六'], meaning: '同款帆船，旅程与过渡' },
-    { type: '关联库', symbol: '天平', cards: ['正义', '星币六'], meaning: '同款天平，公正与平衡' },
-    { type: '关联库', symbol: '无限符号', cards: ['魔术师', '星币二', '力量'], meaning: '∞，无限潜能与永恒循环' },
-    { type: '素材库', symbol: '山脉', cards: ['愚人', '隐士', '恋人', '皇帝', '节制', '审判', '权杖侍从', '权杖骑士', '星币Ace', '星币侍从'], meaning: '险阻、远方、蓄势、超越' },
-    { type: '素材库', symbol: '河流/水流', cards: ['皇后', '节制', '月亮', '审判', '圣杯Ace', '圣杯八', '圣杯骑士'], meaning: '潜意识流动、过渡、远方' },
-    { type: '素材库', symbol: '小径', cards: ['愚人', '隐士', '月亮', '节制'], meaning: '人生道路、追寻' },
-    { type: '素材库', symbol: '海/浪', cards: ['宝剑二', '星币二'], meaning: '情感起伏、潜意识波动' },
-    { type: '素材库', symbol: '太阳', cards: ['太阳', '恋人', '死神', '节制'], meaning: '意识、生命之源、启迪' },
-    { type: '素材库', symbol: '月亮', cards: ['女祭司', '月亮', '圣杯八'], meaning: '直觉、潜意识、暗中之光' },
-    { type: '素材库', symbol: '星星', cards: ['星星', '战车', '皇后'], meaning: '希望、指引、天命' },
-    { type: '素材库', symbol: '云', cards: ['愚人', '审判', '圣杯四', '圣杯七', '宝剑侍从', '宝剑骑士'], meaning: '思绪、迷雾、神圣遮蔽' },
-    { type: '素材库', symbol: '城堡', cards: ['权杖Ace', '权杖二', '权杖四', '圣杯五', '圣杯六', '星币四', '星币十', '星币国王'], meaning: '安全感、归宿、成就' }
-];
-
+// ===== A3 结束 =====
+// ===== A4: 核心业务函数（不含资料库渲染） =====
 function getDualElements(card) {
     const primary = card.element;
     let secondary = null;
@@ -645,7 +647,6 @@ function drawSpread() {
                 const revTxt = sc.reversed ? "逆位" : "正位";
                 const revClass = sc.reversed ? "is-reversed" : "is-upright";
                 const brief = sc.reversed ? sc.card.reverseDesc : sc.card.desc;
-                // 修改：将 desc 放入 head 内，实现左对齐 + 左右并排
                 htmlStr += `<div class="spread-node ${revClass}">
                                 <div class="spread-node-head">
                                     <span class="spread-node-pos">${posName}</span>
@@ -672,17 +673,15 @@ function openSpirit() {
             fullSpreadText += `【${posName}】${sc.card.name}(${revTxt})：位置含义：${posMean}；牌释义：${sc.reversed ? sc.card.reverseDesc : sc.card.desc}\n`;
         })
     }
-    // 如果已经点开单张牌，追加单张牌信息；优先整套牌阵
     if(fullSpreadText){
         setSpiritContext(fullSpreadText);
     }else if(currentCard){
-        // 保留原有单张牌逻辑不变
         setSpiritContext(`当前牌面：${currentCard.name}（${currentPosition === 'reversed' ? '逆位' : '正位'}）。元素：${currentCard.element}。画面符号：${currentCard.highlight}`);
     }else{
         setSpiritContext("暂无牌阵或牌面，请先抽牌或者点开一张卡牌");
     }
     document.getElementById('ai-spirit-modal').classList.add('active');
-    // 已删除 summaryBox 相关代码，不再显示大段重复文字
+    // 已删除 summaryBox 相关代码
 }
 
 function checkDailyCard() {
@@ -705,8 +704,43 @@ function showDailyCard() {
 }
 
 function openLibrary() {
-    document.getElementById('libraryModal').classList.add('active');
+    const modal = document.getElementById('libraryModal');
+    if (!modal) return;
+    modal.classList.add('active');
+    renderLibraryNumbers();
+    renderLibraryElements();
+    renderLibraryZodiac();
+    document.querySelectorAll('.library-section').forEach(s => s.classList.remove('active'));
+    document.getElementById('lib-numbers')?.classList.add('active');
+    document.querySelectorAll('.library-tab').forEach(t => t.classList.remove('active'));
+    document.querySelector('.library-tab[data-tab="numbers"]')?.classList.add('active');
+    const container = modal.querySelector('.library-tabs');
+    if (container && !container._bound) {
+        container._bound = true;
+        container.addEventListener('click', function(e) {
+            const tab = e.target.closest('.library-tab');
+            if (!tab) return;
+            const tabName = tab.dataset.tab;
+            document.querySelectorAll('.library-tab').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            document.querySelectorAll('.library-section').forEach(s => s.classList.remove('active'));
+            const targetSection = document.getElementById('lib-' + tabName);
+            if (targetSection) targetSection.classList.add('active');
+            if (tabName === 'symbols') {
+                const input = document.getElementById('symbolSearchInput');
+                if (input) input.value = '';
+                searchSymbols();
+            }
+        });
+    }
+    const searchInput = document.getElementById('symbolSearchInput');
+    if (searchInput && !searchInput._bound) {
+        searchInput._bound = true;
+        searchInput.addEventListener('input', searchSymbols);
+    }
+    searchSymbols();
 }
+
 function closeLibrary() {
     document.getElementById('libraryModal').classList.remove('active');
 }
@@ -742,7 +776,6 @@ function searchSymbols() {
     }).join('');
 }
 
-// 原版AI精灵，完整保留 fetch /api/chat，无开关
 let spiritContext = '';
 function setSpiritContext(ctx) {
     spiritContext = ctx;
@@ -792,6 +825,94 @@ async function askSpirit() {
         inp.value = '';
     }
 }
+// ===== A4 结束 =====
+// ===== A5: 资料库数据、渲染、事件绑定与初始化 =====
+const NUMBER_MEANINGS = [
+    { number: '0', meaning: '愚者', keywords: '开始、冒险、信任' },
+    { number: '1', meaning: '魔术师', keywords: '创造、意志、专注' },
+    { number: '2', meaning: '女祭司', keywords: '直觉、智慧、沉默' },
+    { number: '3', meaning: '女皇', keywords: '丰饶、滋养、美' },
+    { number: '4', meaning: '皇帝', keywords: '秩序、权威、稳固' },
+    { number: '5', meaning: '教皇', keywords: '传统、教诲、灵性' },
+    { number: '6', meaning: '恋人', keywords: '选择、结合、和谐' },
+    { number: '7', meaning: '战车', keywords: '意志、胜利、征服' },
+    { number: '8', meaning: '力量', keywords: '勇气、耐心、接纳' },
+    { number: '9', meaning: '隐士', keywords: '内省、智慧、独行' },
+    { number: '10', meaning: '命运之轮', keywords: '命运、转变、循环' },
+    { number: '11', meaning: '正义', keywords: '公正、因果、平衡' },
+    { number: '12', meaning: '倒吊人', keywords: '臣服、逆转、牺牲' },
+    { number: '13', meaning: '死神', keywords: '结束、新生、蜕变' },
+    { number: '14', meaning: '节制', keywords: '融合、平衡、调和' },
+    { number: '15', meaning: '恶魔', keywords: '欲望、束缚、物质' },
+    { number: '16', meaning: '高塔', keywords: '崩塌、觉醒、颠覆' },
+    { number: '17', meaning: '星星', keywords: '希望、疗愈、指引' },
+    { number: '18', meaning: '月亮', keywords: '潜意识、恐惧、幻象' },
+    { number: '19', meaning: '太阳', keywords: '喜悦、生命、胜利' },
+    { number: '20', meaning: '审判', keywords: '觉醒、召唤、重生' },
+    { number: '21', meaning: '世界', keywords: '圆满、完成、整合' }
+];
+
+const ELEMENTS_DATA = [
+    { name: '火', icon: '🔥', traits: '热情、行动、意志、创造力', associated: '权杖、狮子、白羊、射手' },
+    { name: '风', icon: '💨', traits: '思维、沟通、逻辑、变化', associated: '宝剑、水瓶、双子、天秤' },
+    { name: '水', icon: '💧', traits: '情感、直觉、滋养、流动', associated: '圣杯、巨蟹、天蝎、双鱼' },
+    { name: '土', icon: '🌍', traits: '物质、现实、稳定、耐心', associated: '星币、金牛、处女、摩羯' }
+];
+
+const ZODIAC_DATA = [
+    { sign: '♈', name: '白羊座', dates: '3.21-4.19', card: '皇帝' },
+    { sign: '♉', name: '金牛座', dates: '4.20-5.20', card: '教皇' },
+    { sign: '♊', name: '双子座', dates: '5.21-6.21', card: '恋人' },
+    { sign: '♋', name: '巨蟹座', dates: '6.22-7.22', card: '战车' },
+    { sign: '♌', name: '狮子座', dates: '7.23-8.22', card: '力量' },
+    { sign: '♍', name: '处女座', dates: '8.23-9.22', card: '隐士' },
+    { sign: '♎', name: '天秤座', dates: '9.23-10.23', card: '正义' },
+    { sign: '♏', name: '天蝎座', dates: '10.24-11.22', card: '死神' },
+    { sign: '♐', name: '射手座', dates: '11.23-12.21', card: '节制' },
+    { sign: '♑', name: '摩羯座', dates: '12.22-1.19', card: '恶魔' },
+    { sign: '♒', name: '水瓶座', dates: '1.20-2.18', card: '星星' },
+    { sign: '♓', name: '双鱼座', dates: '2.19-3.20', card: '月亮' }
+];
+
+function renderLibraryNumbers() {
+    const grid = document.getElementById('numberGrid');
+    if (!grid) return;
+    grid.innerHTML = NUMBER_MEANINGS.map(n => `
+        <div class="number-card">
+            <div class="number-value">${n.number}</div>
+            <div class="number-meaning">${n.meaning}</div>
+            <div class="number-keywords">${n.keywords}</div>
+        </div>
+    `).join('');
+}
+
+function renderLibraryElements() {
+    const grid = document.getElementById('elementGrid');
+    if (!grid) return;
+    grid.innerHTML = ELEMENTS_DATA.map(e => `
+        <div class="element-card">
+            <div class="element-header">
+                <span class="element-icon">${e.icon}</span>
+                <span class="element-title">${e.name}</span>
+            </div>
+            <div style="font-size:0.8rem;color:var(--text);">${e.traits}</div>
+            <div class="element-assoc">对应：${e.associated}</div>
+        </div>
+    `).join('');
+}
+
+function renderLibraryZodiac() {
+    const grid = document.getElementById('zodiacGrid');
+    if (!grid) return;
+    grid.innerHTML = ZODIAC_DATA.map(z => `
+        <div class="zodiac-item">
+            <div class="zodiac-symbol">${z.sign}</div>
+            <div class="zodiac-name">${z.name}</div>
+            <div class="zodiac-date">${z.dates}</div>
+            <div style="font-size:0.6rem;color:var(--gold);">牌：${z.card}</div>
+        </div>
+    `).join('');
+}
 
 function bindEvents() {
     document.querySelectorAll('[data-view]').forEach(btn=>{
@@ -826,7 +947,6 @@ function bindEvents() {
     document.getElementById('modalNote')?.addEventListener('blur',saveNote);
     document.getElementById('dailyBtn')?.addEventListener('click',showDailyCard);
 
-    // 牌阵选择器事件绑定（必须在bindEvents里，且只绑定一次）
     document.querySelector('#spreadSelector')?.addEventListener('click', e => {
         const btn = e.target.closest('[data-spread]');
         if (!btn) return;
@@ -839,6 +959,12 @@ function bindEvents() {
         document.getElementById('spreadInterp').style.display = 'none';
         document.getElementById('spreadBaseInterp').innerText = '';
     });
+
+    document.querySelector('.library-btn')?.addEventListener('click', openLibrary);
+    document.querySelector('#libraryModal .modal-close')?.addEventListener('click', closeLibrary);
+    document.querySelector('#libraryModal')?.addEventListener('click', function(e) {
+        if (e.target === this) closeLibrary();
+    });
 }
 
 window.addEventListener('DOMContentLoaded',()=>{
@@ -847,3 +973,4 @@ window.addEventListener('DOMContentLoaded',()=>{
     renderGrid();
     checkDailyCard();
 });
+// ===== A5 结束 =====
