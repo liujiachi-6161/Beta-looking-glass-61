@@ -649,11 +649,15 @@ if(baseEl){
     spreadCards.forEach((sc, idx)=>{
         const posName = def.slots[idx];
         const revTxt = sc.reversed ? "逆位" : "正位";
+        const revClass = sc.reversed ? "is-reversed" : "is-upright";
         const brief = sc.reversed ? sc.card.reverseDesc : sc.card.desc;
-        htmlStr += `<div class="spread-base-item">
-<span class="spread-base-title">${posName}｜${sc.card.name} ${revTxt}</span>
-${brief}
-</div>`;
+        htmlStr += `<div class="spread-node ${revClass}">
+                        <div class="spread-node-head">
+                            <span class="spread-node-pos">${posName}</span>
+                            <span class="spread-node-card">${sc.card.name} · ${revTxt}</span>
+                        </div>
+                        <div class="spread-node-desc">${brief}</div>
+                    </div>`;
     })
   baseEl.innerHTML = htmlStr;
         }
