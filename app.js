@@ -682,6 +682,11 @@ function openSpirit() {
         setSpiritContext("暂无牌阵或牌面，请先抽牌或者点开一张卡牌");
     }
     document.getElementById('ai-spirit-modal').classList.add('active');
+    const summaryBox = document.querySelector("#aiSummaryText");
+if(summaryBox && fullSpreadText){
+    summaryBox.innerText = fullSpreadText;
+}else{
+    if(summaryBox) summaryBox.innerText = "";
 }
 
 document.querySelector('#spreadSelector')?.addEventListener('click', e => {
