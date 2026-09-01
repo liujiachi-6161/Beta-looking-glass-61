@@ -286,7 +286,25 @@ const TAROT_DATA = [
     {"id":77,"name":"星币国王","emoji":"👑","element":"土","number":"国王","type":"pentacles","age":"中年","role":"掌控者","time":"正午","mood":"权威","event":"掌控","desc":"财富之主。成熟掌控物质，王座稳固。","reverseDesc":"贪婪腐败，物质至上。过度追求物质，或财务腐败。","highlight":"星币·财富","imgUrl":"https://pic1.imgdb.cn/i/034GXmeHL0MsFCWrjmnmzb.jpg"}
 ];
 // ===== A3 结束 =====
-// ===== A4: 核心业务函数（不含资料库渲染） =====
+// ===== A4: 核心业务函数（含增强版关联库） =====
+
+// ----- 新增：构建符号倒排索引（基于每张牌的 highlight） -----
+function buildSymbolIndex() {
+    const index = {};
+    TAROT_DATA.forEach(card => {
+        const symbols = card.highlight.split('·').map(s => s.trim()).filter(s => s);
+        symbols.forEach(sym => {
+            if (!index[sym]) index[sym] = [];
+            if (!index[sym].find(c => c.id === card.id)) {
+                index[sym].push({ id: card.id, name: card.name });
+            }
+        });
+    });
+    return index;
+}
+const SYMBOL_INDEX = buildSymbolIndex();
+
+// ----- 原有函数：getDualElements -----
 function getDualElements(card) {
     const primary = card.element;
     let secondary = null;
@@ -295,12 +313,15 @@ function getDualElements(card) {
     }
     return { primary, secondary };
 }
+
+// ----- 原有函数：getMixElementDesc -----
 function getMixElementDesc(primary, secondary) {
     if (!secondary) return null;
     const key = primary + '+' + secondary;
     return MIX_ELEMENT_DESC[key] || `${primary}与${secondary}的融合`;
 }
 
+// ----- 原有函数：switchPosition -----
 function switchPosition(pos) {
     currentPosition = pos;
     document.getElementById('uprightTab').classList.toggle('active', pos === 'upright');
@@ -321,11 +342,13 @@ function switchPosition(pos) {
     }
 }
 
+// ----- 原有函数：getTypeName -----
 function getTypeName(type) {
     const names = { major: '大阿卡纳', wands: '权杖', cups: '圣杯', swords: '宝剑', pentacles: '星币' };
     return names[type] || type;
 }
 
+// ----- 原有函数：showToast -----
 function showToast(msg) {
     const toast = document.getElementById('toast');
     if (toastTimer) clearTimeout(toastTimer);
@@ -334,6 +357,7 @@ function showToast(msg) {
     toastTimer = setTimeout(() => toast.classList.remove('show'), 2000);
 }
 
+// ----- 原有函数：switchView -----
 function switchView(view) {
     currentView = view;
     document.querySelectorAll('[data-view]').forEach(btn => {
@@ -355,6 +379,7 @@ function switchView(view) {
     if (view === 'history') renderHistory();
 }
 
+// ----- 原有函数：setFilter -----
 function setFilter(filter) {
   currentFilter = filter;
   document.querySelectorAll('[data-filter]').forEach(btn => {
@@ -374,6 +399,7 @@ function setFilter(filter) {
   })
 }
 
+// ----- 原有函数：renderGrid -----
 function renderGrid() {
     const grid = document.getElementById('cardGrid');
     if (!grid) return;
@@ -402,6 +428,7 @@ function renderGrid() {
     }).join('');
 }
 
+// ----- 原有函数：openCard -----
 function openCard(id, isReversed = false) {
     currentPosition = isReversed ? "reversed" : "upright";
     currentCard = TAROT_DATA.find(c => c.id === id);
@@ -440,6 +467,7 @@ function openCard(id, isReversed = false) {
     setSpiritContext(`当前牌面：${currentCard.name}（${currentPosition === 'reversed' ? '逆位' : '正位'}）。元素：${currentCard.element}。画面符号：${currentCard.highlight}`);
 }
 
+// ----- 原有函数：renderElementDisplay -----
 function renderElementDisplay(card) {
     const dual = getDualElements(card);
     const elementDisplay = document.getElementById('elementDisplay');
@@ -458,16 +486,21 @@ function renderElementDisplay(card) {
     elementDisplay.innerHTML = html;
 }
 
+// ----- 原有函数：closeModal -----
 function closeModal() {
     const modal = document.getElementById('modal');
     if (modal) modal.classList.remove('active');
     currentCard = null;
 }
+
+// ----- 原有函数：closeModalScroll -----
 function closeModalScroll() {
     const scrollPos = window.scrollY;
     closeModal();
     setTimeout(() => window.scrollTo({ top: scrollPos, behavior: 'auto' }), 10);
 }
+
+// ----- 原有函数：toggleFavorite -----
 function toggleFavorite() {
     if (!currentCard) return;
     const idx = favorites.indexOf(currentCard.id);
@@ -486,6 +519,8 @@ function toggleFavorite() {
     }
     renderGrid();
 }
+
+// ----- 原有函数：shareCard -----
 function shareCard() {
     if (!currentCard) return;
     const posText = currentPosition === 'reversed' ? '逆位' : '正位';
@@ -496,6 +531,8 @@ function shareCard() {
         navigator.clipboard.writeText(text).then(() => showToast('已复制到剪贴板'));
     }
 }
+
+// ----- 原有函数：saveNote -----
 function saveNote() {
     if (!currentCard) return;
     const modalNote = document.getElementById('modalNote');
@@ -506,47 +543,118 @@ function saveNote() {
     }
 }
 
+// ----- 替换为增强版：renderRelatedCards（手动 + 自动倒排） -----
 function renderRelatedCards(card) {
     const container = document.getElementById('relatedCards');
     const grid = document.getElementById('relatedGrid');
     if (!container || !grid) return;
-    const hits = tarotSymbols.filter(s => s.cards.includes(card.name));
-    if (!hits.length) {
+
+    // 1. 从手动 tarotSymbols 中找命中
+    const manualHits = tarotSymbols.filter(s => s.cards.includes(card.name));
+    // 2. 从自动倒排索引中找该牌包含的符号（排除手动已覆盖的）
+    const autoHits = [];
+    const cardSymbols = card.highlight.split('·').map(s => s.trim()).filter(s => s);
+    cardSymbols.forEach(sym => {
+        const indexed = SYMBOL_INDEX[sym];
+        if (indexed && indexed.length > 1) {
+            const alreadyManual = manualHits.some(m => m.symbol === sym);
+            if (!alreadyManual) {
+                autoHits.push({
+                    type: '自动关联',
+                    symbol: sym,
+                    cards: indexed.map(c => c.name),
+                    meaning: `出现在 ${indexed.map(c => c.name).join('、')} 中`,
+                });
+            }
+        }
+    });
+
+    // 合并：先手动，后自动
+    const allHits = [...manualHits, ...autoHits];
+    // 按 symbol 去重
+    const unique = [];
+    const seen = new Set();
+    allHits.forEach(item => {
+        if (!seen.has(item.symbol)) {
+            seen.add(item.symbol);
+            unique.push(item);
+        }
+    });
+
+    if (!unique.length) {
         container.style.display = 'none';
         return;
     }
     container.style.display = 'block';
-    grid.innerHTML = hits.map(s => {
-        const isLink = s.type === '关联库';
-        const others = s.cards.filter(n => n !== card.name).join(' / ');
+
+    grid.innerHTML = unique.map(s => {
+        const isLink = s.type === '关联库' || s.type === '自动关联';
+        const others = s.cards ? s.cards.filter(n => n !== card.name).join(' / ') : '';
+        const icon = s.type === '关联库' ? '🔗' : (s.type === '自动关联' ? '🔄' : '🎨');
         return `<div class="symbol-chip ${isLink ? 'chip-link' : 'chip-material'}" onclick="showSymbolCard('${s.symbol}')">
-                    <div class="chip-icon">${isLink ? '🔗' : '🎨'}</div>
-                    <div class="chip-text"><div class="chip-name">${s.symbol}</div><div class="chip-type">${s.type}</div></div>
+                    <div class="chip-icon">${icon}</div>
+                    <div class="chip-text">
+                        <div class="chip-name">${s.symbol}</div>
+                        <div class="chip-type">${s.type || '素材库'}</div>
+                    </div>
                     <div class="chip-others">${others}</div>
                 </div>`;
     }).join('');
 }
 
+// ----- 替换为增强版：showSymbolCard（支持手动 + 自动数据源） -----
 function showSymbolCard(symbolName) {
-    const s = tarotSymbols.find(x => x.symbol === symbolName);
+    // 先查手动库
+    let s = tarotSymbols.find(x => x.symbol === symbolName);
+    // 再查自动索引
+    if (!s) {
+        const indexed = SYMBOL_INDEX[symbolName];
+        if (indexed) {
+            s = {
+                type: '自动关联',
+                symbol: symbolName,
+                cards: indexed.map(c => c.name),
+                meaning: `出现在 ${indexed.map(c => c.name).join('、')} 中`,
+            };
+        }
+    }
     if (!s) return;
-    const isLink = s.type === '关联库';
+
+    const isLink = s.type === '关联库' || s.type === '自动关联';
     const accent = isLink ? '#b77e5e' : '#8f7a6b';
+    const icon = s.type === '关联库' ? '🔗' : (s.type === '自动关联' ? '🔄' : '🎨');
+
     const html = `<div class="symbol-modal" onclick="this.remove()">
                 <div class="symbol-modal-inner ${isLink ? 'symbol-related' : 'symbol-material'}" onclick="event.stopPropagation()">
-                    <div class="symbol-modal-header" style="color:${accent}">${isLink ? '🔗 关联库' : '🎨 画面素材'}</div>
+                    <div class="symbol-modal-header" style="color:${accent}">
+                        ${icon} ${s.type || '素材库'}
+                    </div>
                     <h3 style="color:#ebd6c2;margin:.3rem 0 .5rem;font-size:1.3rem">${s.symbol}</h3>
                     <p class="symbol-meaning">${s.meaning}</p>
-                    <div class="symbol-hint">${isLink ? '📖 关联库：用于理解牌与牌之间的叙事联系' : '🖌️ 素材库：仅作为画面元素与创作参考'}</div>
+                    <div class="symbol-hint">
+                        ${isLink
+                            ? '📖 关联库：用于理解牌与牌之间的叙事联系'
+                            : '🖌️ 素材库：仅作为画面元素与创作参考'}
+                    </div>
                     <hr style="border:0;border-top:1px solid #3f2e2a;margin:.8rem 0">
-                    <div style="font-size:.75rem;color:#d9946b;margin-bottom:.4rem">出现牌面（${s.cards.length}张）</div>
-                    <div class="symbol-tags">${s.cards.map(name => { const c = TAROT_DATA.find(x => x.name === name); return `<span class="symbol-tag">${c ? c.emoji : ''} ${name}</span>`; }).join('')}</div>
-                    <button class="close-scroll-btn" onclick="this.closest('.symbol-modal').remove()">✕ 合上符号卷轴</button>
+                    <div style="font-size:.75rem;color:#d9946b;margin-bottom:.4rem">
+                        出现牌面（${s.cards.length}张）
+                    </div>
+                    <div class="symbol-tags">
+                        ${s.cards.map(name => {
+                            const c = TAROT_DATA.find(x => x.name === name);
+                            return `<span class="symbol-tag" style="cursor:pointer;" onclick="closeModal();openCard(${c ? c.id : 0})">${c ? c.emoji : ''} ${name}</span>`;
+                        }).join('')}
+                    </div>
+                    <button class="close-scroll-btn" onclick="this.closest('.symbol-modal').remove()">
+                        ✕ 合上符号卷轴
+                    </button>
                 </div>
             </div>`;
     document.body.insertAdjacentHTML('beforeend', html);
 }
 
+// ----- 原有函数：drawCard -----
 function drawCard() {
     const deck = document.getElementById('deck');
     if (!deck) return;
@@ -569,6 +677,7 @@ function drawCard() {
     }, 500);
 }
 
+// ----- 原有函数：addToHistory -----
 function addToHistory(card, isReversed = false) {
     const record = {
         cardId: card.id,
@@ -583,6 +692,7 @@ function addToHistory(card, isReversed = false) {
     localStorage.setItem('tarot_history', JSON.stringify(history));
 }
 
+// ----- 原有函数：renderHistory -----
 function renderHistory() {
     const list = document.getElementById('historyList');
     if (!list) return;
@@ -605,6 +715,7 @@ function renderHistory() {
     }).join('');
 }
 
+// ----- 原有函数：drawSpread（包含你已经改好的解读块结构） -----
 let spreadCards = [];
 function drawSpread() {
     const def = SPREAD_DEFS[currentSpread];
@@ -660,8 +771,8 @@ function drawSpread() {
     }, 500);
 }
 
+// ----- 原有函数：openSpirit（已删除 summaryBox） -----
 function openSpirit() {
-    // 打开AI弹窗，自动拼接当前整套牌阵上下文
     let fullSpreadText = "";
     const def = SPREAD_DEFS[currentSpread];
     if(spreadCards && spreadCards.length > 0){
@@ -681,9 +792,9 @@ function openSpirit() {
         setSpiritContext("暂无牌阵或牌面，请先抽牌或者点开一张卡牌");
     }
     document.getElementById('ai-spirit-modal').classList.add('active');
-    // 已删除 summaryBox 相关代码
 }
 
+// ----- 原有函数：checkDailyCard -----
 function checkDailyCard() {
     const today = new Date().toDateString();
     if (dailyCard && dailyCard.date !== today) {
@@ -691,6 +802,8 @@ function checkDailyCard() {
         localStorage.removeItem('tarot_daily');
     }
 }
+
+// ----- 原有函数：showDailyCard -----
 function showDailyCard() {
     checkDailyCard();
     const today = new Date().toDateString();
@@ -703,6 +816,7 @@ function showDailyCard() {
     openCard(dailyCard.cardId, dailyCard.reversed);
 }
 
+// ----- 原有函数：openLibrary（已修复） -----
 function openLibrary() {
     const modal = document.getElementById('libraryModal');
     if (!modal) return;
@@ -741,9 +855,12 @@ function openLibrary() {
     searchSymbols();
 }
 
+// ----- 原有函数：closeLibrary -----
 function closeLibrary() {
     document.getElementById('libraryModal').classList.remove('active');
 }
+
+// ----- 原有函数：filterSymbolCat -----
 function filterSymbolCat(cat, evt) {
     evt?.stopPropagation();
     currentSymbolFilter = cat;
@@ -751,6 +868,8 @@ function filterSymbolCat(cat, evt) {
     evt?.target?.classList.add('active');
     searchSymbols();
 }
+
+// ----- 原有函数：searchSymbols -----
 function searchSymbols() {
     const input = document.getElementById('symbolSearchInput');
     const keyword = input ? input.value.trim().toLowerCase() : '';
@@ -776,6 +895,7 @@ function searchSymbols() {
     }).join('');
 }
 
+// ----- 原有函数：setSpiritContext / closeSpirit / askSpirit -----
 let spiritContext = '';
 function setSpiritContext(ctx) {
     spiritContext = ctx;
