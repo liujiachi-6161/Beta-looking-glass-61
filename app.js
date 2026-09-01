@@ -702,6 +702,7 @@ document.querySelector('#spreadSelector')?.addEventListener('click', e => {
     document.getElementById('spreadInterp').style.display = 'none';
     document.getElementById('spreadBaseInterp').innerText = '';
 });
+            } 
 
 function checkDailyCard() {
     const today = new Date().toDateString();
