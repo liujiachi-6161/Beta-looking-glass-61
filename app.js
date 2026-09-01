@@ -683,6 +683,10 @@ function openSpirit() {
     }
     document.getElementById('ai-spirit-modal').classList.add('active');
 }
+
+document.querySelector('#spreadSelector')?.addEventListener('click', e => {
+    const btn = e.target.closest('[data-spread]');
+    if (!btn) return;
     document.querySelectorAll('#spreadSelector .btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     currentSpread = btn.dataset.spread;
