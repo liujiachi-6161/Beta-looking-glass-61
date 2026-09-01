@@ -655,10 +655,12 @@ if(baseEl){
 ${brief}
 </div>`;
     })
-    baseEl.innerHTML = htmlStr;
-}
-        
-function openSpirit() {
+  baseEl.innerHTML = htmlStr;
+        }
+    }, 500);
+    }
+
+    function openSpirit() {
     // 打开AI弹窗，自动拼接当前整套牌阵上下文
     let fullSpreadText = "";
     const def = SPREAD_DEFS[currentSpread];
