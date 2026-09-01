@@ -642,23 +642,22 @@ function drawSpread() {
                         <div class="spread-meaning">${mean}</div>
                     </div>`;
         }).join('');
-        // ==========新增：渲染底部基础解读汇总==========
-{
-    const baseEl = document.getElementById("spreadBaseInterp");
-    if(baseEl){
-        let baseText = `✦ ${def.label} · 基础解读 ✦\n`;
-        spreadCards.forEach((sc, idx)=>{
-            const posName = def.slots[idx];
-            const revTxt = sc.reversed ? "逆位" : "正位";
-            const brief = sc.reversed ? sc.card.reverseDesc : sc.card.desc;
-            baseText += `【${posName}】${sc.card.name} ${revTxt}：${brief}\n`;
-        })
-        baseEl.innerText = baseText;
-    }
+//=======新增：渲染底部基础解读汇总========
+const baseEl = document.getElementById("spreadBaseInterp");
+if(baseEl){
+    let htmlStr = "";
+    spreadCards.forEach((sc, idx)=>{
+        const posName = def.slots[idx];
+        const revTxt = sc.reversed ? "逆位" : "正位";
+        const brief = sc.reversed ? sc.card.reverseDesc : sc.card.desc;
+        htmlStr += `<div class="spread-base-item">
+<span class="spread-base-title">${posName}｜${sc.card.name} ${revTxt}</span>
+${brief}
+</div>`;
+    })
+    baseEl.innerHTML = htmlStr;
 }
-    }, 600);
-}
-
+        
 function openSpirit() {
     // 打开AI弹窗，自动拼接当前整套牌阵上下文
     let fullSpreadText = "";
@@ -765,9 +764,6 @@ function setSpiritContext(ctx) {
     spiritContext = ctx;
     const el = document.getElementById('spirit-context');
     if(el) el.innerText = ctx;
-}
-function openSpirit() {
-    document.getElementById('ai-spirit-modal').classList.add('active');
 }
 function closeSpirit() {
     document.getElementById('ai-spirit-modal').classList.remove('active');
