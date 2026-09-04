@@ -963,7 +963,6 @@ body,html {
 .home-title {
     animation: breathTitleGlow 6s ease‑in‑out infinite;
 }
-
 /* ===== 导图式解读块样式（优化版） ===== */
 /* 正位金光 + 左对齐左右并排 + 垂直居中 */
 .spread-node {
@@ -991,7 +990,6 @@ body,html {
         0 0 30px rgba(217, 148, 107, 0.5);
     border-left-color: var(--gold);
 }
-
 /* 逆位状态 — 紫色光效 */
 .spread-node.is-reversed {
     border-left-color: #9b59b6;
@@ -1010,7 +1008,6 @@ body,html {
     background: rgba(155, 89, 182, 0.2);
     color: #9b59b6;
 }
-
 /* 内部 head 行：左对齐，左右并排，垂直居中 */
 .spread-node-head {
     display: flex;
@@ -1058,4 +1055,11 @@ body,html {
         flex-basis: 100%;          /* 小屏换行占满 */
         margin-top: 6px;
     }
+}
+/* ===== 页脚免责说明 ===== */
+.footer-note {
+    font-size: 12px;
+    text-align: center;
+    padding: 16px 8px;
+    color: #9ca3af;
 }
